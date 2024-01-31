@@ -1,0 +1,168 @@
+
+
+
+
+                                                                 J. Five
+                                     Mission Control Space Services Inc.
+                                                         27 October 2021
+
+
+                         The MoonWire Protocol
+                           draft-moonwire-00
+
+Abstract
+
+   The MoonWire Protocol enables message passing and data marshalling
+   between software subsystems of a Lunar lander.  It has been designed
+   with simplicity in mind in order to reduce software defect rate -
+   this is important when trying to land on the Moon!
+
+Table of Contents
+
+   1.  Protocol Overview . . . . . . . . . . . . . . . . . . . . . .   1
+   2.  Data Framing  . . . . . . . . . . . . . . . . . . . . . . . .   1
+     2.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     2.2.  Fields  . . . . . . . . . . . . . . . . . . . . . . . . .   2
+       2.2.1.  Type  . . . . . . . . . . . . . . . . . . . . . . . .   2
+       2.2.2.  Time  . . . . . . . . . . . . . . . . . . . . . . . .   2
+       2.2.3.  Payload data  . . . . . . . . . . . . . . . . . . . .   2
+     2.3.  Message Types . . . . . . . . . . . . . . . . . . . . . .   3
+
+1.  Protocol Overview
+
+   The protocol is an independant UDP-based protocol for a bus-style
+   communication system.  It can be used to send/receive messages
+   client-to-client by routing framed UDP-packets to one another through
+   a server.  This server is responsible for routing all messages in a
+   one-to-all pattern.  In order to ensure client-client and server-
+   client interoperability - messages are sent within single UDP-
+   packages according to the MoonWire data framing specification (see
+   Section 2).
+
+   All clients and the server are assumed to be on the same host and are
+   identified by port number.  All messages are routed through a message
+   router which can be identified by a single port.  By default this
+   port can be found at 12777.
+
+2.  Data Framing
+
+
+
+
+
+
+
+
+Five                          Experimental                      [Page 1]
+
+                                 mwproto                    October 2021
+
+
+2.1.  Overview
+
+   The data framing should be adhered to by all clients and the server.
+   Due to the connectionless-nature of UDP, clients can send or recieve
+   data at any time after binding their ports.
+
+          0   1   2   3   4   5   6   7   8   9   10   11   12
+        +------------------------------------------------------+
+        |       |               |                              |
+        | Type  | Time          | Payload data                 |
+        |       |               |                              |
+        +------------------------------------------------------+
+        |                                                      |
+        |  Payload data continued...                           |
+        |                                                      |
+        +------------------------------------------------------+
+
+                Figure 1: Data framing overview for MoonWire
+
+   Note the following properties about the data framing:
+
+   *  For any given message type, all messages are sent in order.
+
+   *  Each data field in a message is byte-aligned.
+
+   *  Each message is broadcast to all subsystems regardless of its
+      type.
+
+2.2.  Fields
+
+   All data is sent in network byte order (big-endian).  The fields are
+   listed in the following sections.
+
+2.2.1.  Type
+
+   *  Size: 2 bytes
+
+   An unsigned 16-bit integer which indicates the message type.
+
+2.2.2.  Time
+
+   *  Size: 4 bytes
+
+   An unsigned 32-bit integer which indicates the mission elapsed time
+   (MET) in milliseconds.
+
+2.2.3.  Payload data
+
+
+
+
+Five                          Experimental                      [Page 2]
+
+                                 mwproto                    October 2021
+
+
+   *  Size: 0-4096 bytes
+
+   A message payload whose framing is determined by the _Type_ field.
+   This value is between 0 and 4096 bytes.
+
+2.3.  Message Types
+
+   Some of the messages types within MoonWire are listed below.  The
+   _Type_ field of a recieved message indicates a specific payload
+   framing (see Section 1).
+
+      +--------+-----------------+---------------------------------+
+      | Type   | Nam             | Payload Framing                 |
+      +========+=================+=================================+
+      | 0xAA01 | LASER_ALTIMETER | 3 unsigned 16-bit integers that |
+      |        |                 | correspond to 3 independant     |
+      |        |                 | laser-altimeter measurements    |
+      +--------+-----------------+---------------------------------+
+      | 0xAA11 | ENGINE_CUTOFF   | Empty                           |
+      +--------+-----------------+---------------------------------+
+      | 0xAA31 | HEIGHT          | 1 unsigned 32-bit integer that  |
+      |        |                 | corresponds to the current      |
+      |        |                 | lander height in centimeters    |
+      +--------+-----------------+---------------------------------+
+
+        Table 1: A sample of messages types that are for MoonWire
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Five                          Experimental                      [Page 3]
