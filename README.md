@@ -1,26 +1,17 @@
 
-
-
-
-                                                              Lior Rozin
-                                                            24 July 2022
-                                                                        
-
-
-                    Height Sensing Subsystem (HSS) in C++
+# Height Sensing Subsystem (HSS) in C++
                            
-
-Table of Contents
-
-   1.  Description . . . . . . . . . . . . . . . . . . . . . . . . .   1
-   2.  Setup instructions  . . . . . . . . . . . . . . . . . . . . .   1
-   3.  Assumptions . . . . . . . . . . . . . . . . . . . . . . . . .   2
-   4.  Process . . . . . . . . . . . . . . . . . . . . . . . . . . .   2
-     4.1.  Language  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     4.2.  Structure . . . . . . . . . . . . . . . . . . . . . . . .   2
-     4.3.  Algorithms  . . . . . . . . . . . . . . . . . . . . . . .   2
+## Table of Contents
 
 1. Description
+2. Setup Instructions
+3. Assumptions
+4. Process
+    - 4.1 Language
+    - 4.2 Structure
+    - 4.3 Algorithms
+
+## 1. Description
 
    This is an implementation of the HSS in C++. It has been written on 
    GNU gdb (Ubuntu 12.0.90-0ubuntu1) 12.0.90 to work on Linux x86_64 
@@ -31,7 +22,7 @@ Table of Contents
    the Lunar lander in centimetres. Once the Lunar lander has landed, 
    an "ENGINE_CUTOFF"(0xAA11) message is sent to MoonWire.
 
-2.  Setup instructions  
+## 2.  Setup instructions  
 
    You may either compile 'hss.cpp' or run the pre-compiled 'hss' file.
    To run the pre-compiled 'hss' file:
@@ -55,13 +46,7 @@ Table of Contents
    	"The Lunar lander has landed!" 
    It will then exit out of the program.
 
-
-Rozin                                                           [Page 2]
-
-                    Height Sensing Subsystem (HSS)             July 2022
-
-
-3. Assumptions
+## 3. Assumptions
 
    1. The raw sensor data can be directly translated from 
       0-65535(UINT16_MAX) to 0-100,000(1000m in cm). At 40.0cm, the
@@ -76,9 +61,9 @@ Rozin                                                           [Page 2]
    3. The "HEGIHT" message is sent in 10 bytes, since no more than 10 bytes
       are needed.
 
-4. Process
+## 4. Process
  
-4.1.  Language
+### 4.1.  Language
 
    I started writing in Python since it is my preferred language. 
    Python is quite versatile and reliable; it allows for cross-platform 
@@ -96,7 +81,7 @@ Rozin                                                           [Page 2]
    life of not only the user but also the developer by making the code easier 
    to maintain. 
 
-4.2.  Structure
+### 4.2.  Structure
 
    * All the code is located in one file not only because of simplicity but 
      also due to the small number of lines needed. 
@@ -110,7 +95,7 @@ Rozin                                                           [Page 2]
    * Sensor data and readings have been assigned to arrays, allowing for the 
      use of loops as well as making maintenance easier for future developers.
 
-4.3.  Algorithms
+### 4.3.  Algorithms
 
    The following algorithm was used to convert the raw data into centimetre
    measurements:
